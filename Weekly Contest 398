@@ -1,1 +1,116 @@
+Q1-3151 : Special Array I --> https://leetcode.com/problems/special-array-i/
 
+// TC : O(n)
+// SC : O(1)
+class Solution {
+public:
+    bool isArraySpecial(vector<int>& nums) 
+    {
+        int n=nums.size();
+        for(int i=1;i<n;i++)
+        {
+            if(nums[i]%2==nums[i-1]%2)
+                return false;
+        }
+        return true;
+    }
+};
+
+
+Q2-3152 : Special Array II --> https://leetcode.com/problems/special-array-ii/description/
+
+class Solution {
+public:
+    vector<bool> isArraySpecial(vector<int>& nums, vector<vector<int>>& queries) 
+    {
+        int n=nums.size();
+        set<int>st;
+        
+        for(int i=1;i<n;i++)
+        {
+            if(nums[i]%2==nums[i-1]%2)
+                st.insert(i-1);
+        }
+        
+        vector<bool>ans;
+        
+        for(auto &v: queries)
+        {
+            auto it=st.lower_bound(v[0]);
+            if(it!=st.end() && *it<=v[1])
+                ans.push_back(false);
+            else
+                ans.push_back(true);
+        }
+        
+        return ans;
+    }
+};
+
+
+Q3-3153 : Sum of Digit Differences of All Pairs --> https://leetcode.com/problems/sum-of-digit-differences-of-all-pairs/description/
+
+class Solution {
+public:
+    long long sumDigitDifferences(vector<int>& nums) 
+    {
+        vector<string>ans;
+        for(auto &it: nums)
+            ans.push_back(to_string(it));
+
+        int n=ans[0].size(), m=ans.size();
+        long long res=0LL;
+
+        for(int i=0;i<n;i++)  // Contribution Technique TC: O(len of each number*n) Better try to see the question col wise, SC: O(n)
+        {
+            vector<int>freq(10,0);
+            for(auto &it: ans)
+            {
+                freq[it[i]-'0']++;
+            }
+
+            for(int j=0;j<10;j++)
+            {
+                // cout<<freq[j]<<" ";
+                // cout<<endl;
+                res+=((m-freq[j])*freq[j]);
+            }
+        }
+
+        return res/=2;;
+    }
+};
+
+
+Q4-3154 : Find Number of Ways to Reach the K-th Stair --> https://leetcode.com/problems/find-number-of-ways-to-reach-the-k-th-stair/description/
+
+// jump and back parameter will not exceed 40 as max value of k is 10^9( 2^40 >>> 10^9) 
+// So we can define dp as int dp[50][50][2] as TC and SC both
+class Solution {
+public:
+    unordered_map<int,unordered_map<int,unordered_map<int,int>>> dp;
+    int rec(int i, int lastStep, int jump, int k)
+    {
+        int ans=0;
+        if(i==k) // if at any point i==k then I have one more option to reach k i.e using the two moves alternatively. For more info see the 2nd example
+            ans++;
+
+        if(dp[i][lastStep].find(jump)!=dp[i][lastStep].end())
+            return dp[i][lastStep][jump];
+
+        if(!lastStep && i!=0)  // Only possible when lastStep is not i-1 and i!=0
+        {
+            ans+=rec(i-1, 1, jump, k);
+        }
+        if(i+(1<<jump)<=k+1) // After taking a jump of i+pow(2,jump) is only possible when it does not exceeds k+1 otherwise it can't be back at k
+        {
+            ans+=rec(i+(1<<jump), 0, jump+1, k);
+        }
+
+        return dp[i][lastStep][jump]=ans;
+    }
+    int waysToReachStair(int k) 
+    {
+        return rec(1,0,0,k);
+    }
+};
