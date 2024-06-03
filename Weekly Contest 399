@@ -1,0 +1,90 @@
+Q1 and Q3.  3162. Find the Number of Good Pairs I and II  (https://leetcode.com/problems/find-the-number-of-good-pairs-i/description/)
+
+vector<int>divisors[100100];
+int done=0;
+void precompute()
+{
+    if(done)
+        return;
+
+    for(int i=1;i<=100000;i++)
+    {
+        for(int j=i;j<=100000;j+=i)
+        {
+            divisors[j].push_back(i);
+        }
+    }
+    done=1;
+    return;
+}
+int freq[100100];
+
+class Solution {
+public:
+    int numberOfPairs(vector<int>& nums1, vector<int>& nums2, int k) {
+        precompute();
+
+        int ans=0;
+        for(auto &it: nums2)
+        {
+            freq[it]++;
+        }
+
+        for(auto &it: nums1)
+        {
+            if(it%k==0)
+            {
+                for(auto &d: divisors[it/k])
+                {
+                    ans+=freq[d];
+                }
+            }
+        }
+
+        for(auto &it: nums2)
+        {
+            freq[it]--;
+        }
+
+        return ans;
+    }
+};
+
+
+Q2.  3163. String Compression III  (https://leetcode.com/problems/string-compression-iii/description/)
+
+class Solution {
+public:
+    string compressedString(string word) 
+    {
+        string ans="";
+        int n=word.size();
+
+        int i=0;
+        char curr=word[0];
+        int cnt=0;
+
+        while(i<n)
+        {
+            while(i<n && word[i]==curr)
+            {
+                cnt++;
+                i++;
+                if(cnt==9)
+                {
+                    ans+='9';
+                    ans+=curr;
+                    cnt=0;
+                }
+            }
+            if(cnt)
+            {
+                ans+=to_string(cnt);
+                ans+=curr;
+            }
+            cnt=0;
+            curr=word[i];
+        }
+        return ans;
+    }
+};
