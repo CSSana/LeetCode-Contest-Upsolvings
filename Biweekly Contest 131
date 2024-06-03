@@ -1,0 +1,83 @@
+Q1. 3158. Find the XOR of Numbers Which Appear Twice (https://leetcode.com/problems/find-the-xor-of-numbers-which-appear-twice/description/)
+
+// TC : O(n) , SC : O(n)
+class Solution {
+public:
+    int duplicateNumbersXOR(vector<int>& nums) {
+        unordered_map<int,int>mp;
+        for(auto &it: nums)
+            mp[it]++;
+
+        int ans=0;
+        for(auto&it: mp)
+        {
+            if(it.second==2)
+                ans^=it.first;
+        }
+
+        return ans;
+    }
+};
+
+
+Q2.  3159. Find Occurrences of an Element in an Array  (https://leetcode.com/problems/find-occurrences-of-an-element-in-an-array/description/)
+
+// TC : O(n) , SC : O(n)
+class Solution {
+public:
+    vector<int> occurrencesOfElement(vector<int>& nums, vector<int>& queries, int x) 
+    {
+        vector<int>pos;
+        int n=nums.size();
+        for(int i=0;i<n;i++)
+        {
+            if(nums[i]==x)
+                pos.push_back(i);
+        }
+
+        vector<int>ans;
+        for(auto &it: queries)
+        {
+            if(it>(int)pos.size())
+                ans.push_back(-1);
+            else
+                ans.push_back(pos[it-1]);
+        }
+
+        return ans;
+    }
+};
+
+
+Q3.  3160. Find the Number of Distinct Colors Among the Balls  (https://leetcode.com/problems/find-the-number-of-distinct-colors-among-the-balls/description/)
+
+// TC : O(n) , SC : O(n)
+class Solution {
+public:
+    vector<int> queryResults(int limit, vector<vector<int>>& queries) 
+    {
+        unordered_map<int,int>colorCount;
+        unordered_map<int,int>ballColor;
+        vector<int>ans;
+
+        for(auto &it: queries)
+        {
+            int ball=it[0], color=it[1];
+
+            if(ballColor[ball])
+            {
+                int prevColor=ballColor[ball];
+                colorCount[prevColor]--;
+                if(colorCount[prevColor]==0)
+                    colorCount.erase(prevColor);
+            }
+
+            ballColor[ball]=color;
+            colorCount[color]++;
+
+            ans.push_back(colorCount.size());
+        }
+
+        return ans;
+    }
+};
