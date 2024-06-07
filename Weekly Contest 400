@@ -1,0 +1,126 @@
+Q1.  3168. Minimum Number of Chairs in a Waiting Room  (https://leetcode.com/problems/minimum-number-of-chairs-in-a-waiting-room/)
+
+// TC : O(n)
+// SC : O(1)
+class Solution {
+public:
+    int minimumChairs(string s) 
+    {
+        int ans=0,cnt=0;
+        int n=s.size();
+        for(int i=0;i<n;i++)
+        {
+            if(s[i]=='E')
+            {
+                cnt++;
+            }
+            else
+            {
+                cnt--;
+            }
+            ans=max(ans,cnt);
+        }
+        return ans;
+    }
+};
+
+
+Q2.  3169. Count Days Without Meetings  (https://leetcode.com/problems/count-days-without-meetings/description/)
+
+// TC : O(nlogn)
+// SC : O(n)
+class Solution {
+public:
+    int countDays(int days, vector<vector<int>>& meetings) 
+    {
+        vector<pair<int,int>>events;
+        for(auto &it: meetings)
+        {
+            events.push_back({it[0],+1}); // Meeting start so +1
+            events.push_back({it[1],-1}); // Meeting end so -1
+        }
+
+        events.push_back({0,0}); // Special cases to handle the first and end position i.e push 0,0 starting with 0 no of day and event 0 means nothing (No meeting start and no meeting end) and days+1 for to handle last day
+        events.push_back({days+1,0}); // start day 1, but meeting start 4 and days 9 and end meeting 5 this kinda test case handling
+        sort(events.begin(),events.end());
+
+        int ans=0, meeting=0;
+        int n=events.size();
+        for(int i=0;i<n-1;i++)
+        {
+            meeting+=events[i].second;
+            if(meeting==0) // meeting == 0 means free days
+            {
+                ans+=max((events[i+1].first-events[i].first-1),0); // count the free days
+            }
+        }
+
+        return ans;
+    }
+};
+
+
+Q3.  3170. Lexicographically Minimum String After Removing Stars  (https://leetcode.com/problems/lexicographically-minimum-string-after-removing-stars/description/)
+
+class Solution {
+public:
+    string clearStars(string s) 
+    {
+        set<pair<char,int>>st;
+        int n=s.size();
+
+        for(int i=0;i<n;i++)
+        {
+            if(s[i]=='*' and st.size())
+            {
+                int ind=st.begin()->second;
+                s[abs(ind)]='*'; // We can use other marks too
+                st.erase(st.begin());
+            }
+            else
+            {
+                st.insert({s[i],-1*i}); // -1*index because we always need the smallest char index closest to the star index
+            }
+        }
+
+        string ans="";
+        for(auto &it: s)
+        {
+            if(it=='*')
+                continue;
+            ans+=it;
+        }
+
+        return ans;
+    }
+};
+
+
+Q4.  3171. Find Subarray With Bitwise AND Closest to K  (https://leetcode.com/problems/find-subarray-with-bitwise-and-closest-to-k/description/)
+
+class Solution {
+public:
+    int minimumDifference(vector<int>& nums, int k) 
+    {
+        set<int>prev; // Special tricks about AND and OR is we can change the values atmost logm times where m is the number of set bits
+        int ans=INT_MAX;
+
+        for(auto &it: nums)
+        {
+            set<int>curr; // New set to maintain new values which will be generated further
+            for(auto &v: prev)
+            {
+                curr.insert(v&it); // only these values can generate 
+            }
+            curr.insert(it); // or the value itself
+
+            for(auto &v: curr)
+            {
+                ans=min(ans,abs(v-k)); // Calculating the ans
+            }
+
+            prev=curr;
+        }
+        return ans;
+    }
+};
