@@ -1,0 +1,84 @@
+Q1.  3184. Count Pairs That Form a Complete Day I
+
+#define ll long long
+class Solution {
+public:
+    int countCompleteDayPairs(vector<int>& hours) 
+    {
+        unordered_map<ll,ll>mp;
+        ll ans=0;
+        for(auto it: hours)
+        {
+            ll rem=it%24;
+            ll complement=(24-rem)%24;
+            
+            if(mp.count(complement))
+                ans+=mp[complement];
+            
+            mp[rem]++;
+        }
+        return ans;
+    }
+};
+
+Q2.  3185. Count Pairs That Form a Complete Day II
+
+#define ll long long
+class Solution {
+public:
+    long long countCompleteDayPairs(vector<int>& hours) 
+    {
+        unordered_map<ll,ll>mp;
+        ll ans=0;
+        for(auto it: hours)
+        {
+            ll rem=it%24;
+            ll complement=(24-rem)%24;
+            
+            if(mp.count(complement))
+                ans+=mp[complement];
+            
+            mp[rem]++;
+        }
+        return ans;
+    }
+};
+
+Q3.  3186. Maximum Total Damage With Spell Casting
+
+class Solution {
+public:
+    long long dp[100010];
+    long long f(vector<pair<long long,long long>>&p, int i)
+    {
+        if(i>=p.size())
+            return 0;
+        
+        if(dp[i]!=-1)
+            return dp[i];
+        
+        long long res=f(p,i+1);
+        
+        int newInd=i;
+        while(newInd<p.size() && p[newInd].first-p[i].first<=2)
+            newInd++;
+        
+        res=max(res,1LL*p[i].first*p[i].second+f(p,newInd));
+        
+        return dp[i]=res;
+    }
+    long long maximumTotalDamage(vector<int>& power) 
+    {
+        map<long long,long long>mp;
+        memset(dp,-1,sizeof(dp));
+        
+        for(auto it: power)
+            mp[it]++;
+        
+        vector<pair<long long,long long>>p;
+        for(auto it: mp)
+            p.push_back({it.first,it.second});
+        
+        return f(p,0);
+    }
+};
