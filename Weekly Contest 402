@@ -1,6 +1,6 @@
 Q1.  3184. Count Pairs That Form a Complete Day I
 
-#define ll long long
+#define ll long long 
 class Solution {
 public:
     int countCompleteDayPairs(vector<int>& hours) 
