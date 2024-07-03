@@ -1,0 +1,113 @@
+1. 3190. Find Minimum Operations to Make All Elements Divisible by Three
+
+class Solution {
+public:
+    int minimumOperations(vector<int>& nums) 
+    {
+        int ans=0;
+        for(auto it: nums)
+        {
+            if(it%3)
+                ans++;
+        }
+        return ans;
+    }
+};
+
+
+2. 3191. Minimum Operations to Make Binary Array Elements Equal to One I
+
+class Solution {
+public:
+    int minOperations(vector<int>& nums) 
+    {
+        int n=nums.size(), ans=0;
+        for(int i=0;i<=n-3;i++)
+        {
+            if(nums[i]==0)
+            {
+                ans++;
+                for(int j=i;j<i+3;j++)
+                {
+                    if(nums[j]==0)
+                        nums[j]=1;
+                    else
+                        nums[j]=0;
+                }
+            }
+        }
+        
+        for(auto it: nums)
+        {
+            if(it==0)
+                return -1;
+        }
+        
+        return ans;
+    }
+};
+
+
+3. 3192. Minimum Operations to Make Binary Array Elements Equal to One II
+
+class Solution {
+public:
+    int minOperations(vector<int>& nums) 
+    {
+        int count=0, flipped=0;
+        for(auto it: nums)
+        {
+            if((it==0 and count%2==0) or (it==1 and count%2==1)) // if((count+it)%2==0)
+            {
+                count++;
+                flipped++;
+            }
+        }
+        return flipped;
+    }
+};
+
+
+3193. Count the Number of Inversions
+
+class Solution {
+public:
+    vector<int>req;
+    int mod=1e9+7;
+    int dp[500][500];
+    int rec(int i, int inv, int n)
+    {
+        if((req[i]!=-1 and req[i]!=inv) or inv>400) 
+            return 0;
+        
+        if(i==n-1)
+            return 1;
+        
+        if(dp[i][inv]!=-1)
+            return dp[i][inv];
+        
+        int ans=0;
+        for(int ch=0;ch<=i+1;ch++)
+        {
+            int newInv=inv+(i+1-ch);
+            if(newInv>400)
+                continue;
+            ans=(ans+rec(i+1, newInv, n))%mod;
+        }
+        
+        return dp[i][inv]=ans%mod;
+    }
+    
+    int numberOfPermutations(int n, vector<vector<int>>& requirements) 
+    {
+        req.clear();
+        req.assign(n,-1);
+        memset(dp,-1,sizeof(dp));
+        for(auto it: requirements)
+        {
+            req[it[0]]=it[1];
+        }
+        
+        return rec(0,0,n);
+    }
+};
