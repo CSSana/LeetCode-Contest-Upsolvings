@@ -1,0 +1,44 @@
+1. 3200. Maximum Height of a Triangle
+
+class Solution {
+public:
+    bool check(int red, int blue, int height)
+    {
+        int n=height/2;
+        int total_balls=height*(height+1)/2;
+        int even_balls=n*(n+1);
+        int odd_balls=total_balls-even_balls;
+        
+        /*
+        For odd rows first have to check wheather the height is odd or even becoz 
+        if the height is even then, the no of odd rows is (height+1/2) 
+        cout<<ceil(3+1/2)<<"\n";
+        
+        int odd_balls=n*n;
+        int even_balls=total_balls-odd_balls;
+        
+        */
+        
+        return (min(odd_balls,even_balls)<=min(red,blue) and max(odd_balls,even_balls)<=max(red,blue));
+        
+    }
+    int maxHeightOfTriangle(int red, int blue)
+    {
+        int low=1, high=105, ans=1;
+        while(low<=high)
+        {
+            int mid=low+(high-low)/2;
+            if(check(red, blue, mid))
+            {
+                ans=max(mid,ans);
+                low=mid+1;
+            }
+            else
+            {
+                high=mid-1;
+            }
+        }
+        
+        return ans;
+    }
+};
