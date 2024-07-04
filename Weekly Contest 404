@@ -11,9 +11,11 @@ public:
         
         /*
         For odd rows first have to check wheather the height is odd or even becoz 
-        if the height is even then, the no of odd rows is (height+1/2) 
+        if the height is even then, the no of odd rows is (height/2) and if odd then
+        the no of odd rows is (height+1/2)
         cout<<ceil(3+1/2)<<"\n";
         
+        int n=(height+1)/2;
         int odd_balls=n*n;
         int even_balls=total_balls-odd_balls;
         
