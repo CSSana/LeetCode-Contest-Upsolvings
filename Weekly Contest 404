@@ -44,3 +44,135 @@ public:
         return ans;
     }
 };
+
+
+2. 3201. Find the Maximum Length of Valid Subsequence I
+
+/*
+The given condition holds for only 4 subsequences :
+All Zeroes : 00000....
+All Ones : 11111....
+Zero One : 010101....
+One Zero : 101010.....
+so find the maximum length of these 4 subsequences that
+Answer = max(AllZeroes , AllOnes , ZeroOne , OneZero)
+*/
+class Solution {
+public:
+    int maximumLength(vector<int> &nums){
+        int AllZeroes = 0 , AllOnes = 0;
+        int ZeroOne = 0 , OneZero = 0;
+        int ReqdForZeroOne = 0 , ReqdForOneZero = 1;
+
+        for(int num : nums){
+            int newNum = num % 2;
+
+            if(newNum == 0) AllZeroes++;
+            
+            if(newNum == 1) AllOnes++;
+
+            if(newNum == ReqdForZeroOne){
+                ZeroOne++;
+                ReqdForZeroOne ^= 1;
+            }
+
+            if(newNum == ReqdForOneZero){
+                OneZero++;
+                ReqdForOneZero ^= 1;
+            }
+
+        }
+        
+        return max({AllZeroes , AllOnes , ZeroOne , OneZero});
+
+    }
+};
+
+
+3. 3202. Find the Maximum Length of Valid Subsequence II
+
+//(sub[0] + sub[1]) % k == (sub[1] + sub[2]) % k == ... == (sub[x - 2] + sub[x - 1]) % k.
+//After decoding, that means longest valid alternating subsequence
+class Solution {
+public:
+    int n,k;
+    map<int,vector<int>>mp;
+    vector<vector<int>>dp;
+    int rec(int i, int j, vector<int>& nums)
+    {
+        if(dp[i][j]!=-1)
+            return dp[i][j];
+        int ans=2;
+        auto iter=lower_bound(mp[nums[i]%k].begin(),mp[nums[i]%k].end(),j);
+        if(iter!=mp[nums[i]%k].begin())
+        {
+            iter--;
+            int x=*iter;
+            ans=max(ans,1+rec(j,x,nums));
+        }
+        return dp[i][j]=ans;
+    }
+    int maximumLength(vector<int>& nums, int K)
+    {
+        n=nums.size();
+        k=K;
+        int ans=0;
+        dp.assign(n,vector<int>(n,-1));
+        for(int i=0;i<n;i++)
+        {
+            mp[nums[i]%k].push_back(i);
+        }
+        
+        for(int i=1;i<n;i++)
+        {
+            for(int j=0;j<i;j++)
+            {
+                ans=max(ans,rec(i,j,nums));
+                /*
+                rec(i,j) means length of the subsequence ending at i where the prev(last) chosen index is j
+                */
+            }
+        }
+        return ans;
+    }
+};
+
+
+4. 3203. Find Minimum Diameter After Merging Two Trees
+
+class Solution {
+private:
+      int DFS(int u , int pu , int &maxi , vector<vector<int>> &Graph){
+            int H1 = 0 , H2 = 0;
+            for(int v : Graph[u]){
+                  if(v != pu){
+                        int h = DFS(v , u , maxi , Graph);
+                        if(h >= H1) H2 = H1 , H1 = h;
+                        else if(h >= H2) H2 = h;
+                  }
+            }
+            maxi = max(maxi , H1 + H2);
+            return 1 + max(H1 , H2);
+      }
+      int findDiameter(vector<vector<int>> &Edges){
+            int n = Edges.size() + 1;
+            vector<vector<int>> Graph(n);
+            for(vector<int> &E : Edges){
+                Graph[E[0]].push_back(E[1]);
+                Graph[E[1]].push_back(E[0]);
+            } 
+            int maxi = 0;
+            DFS(0 , -1 , maxi , Graph);
+            return maxi;
+       }
+public:
+    int minimumDiameterAfterMerge(vector<vector<int>>& edges1, vector<vector<int>>& edges2){
+        int D1 = findDiameter(edges1);
+        int D2 = findDiameter(edges2);
+        int newDiameter = 1 + (D1 + 1)/2 + (D2 + 1)/2;
+        /*
+        It is always optimal to join the mid-points of the trees
+        */
+        return max({D1 , D2 , newDiameter});
+    }
+};
