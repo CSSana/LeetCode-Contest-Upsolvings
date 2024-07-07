@@ -49,3 +49,43 @@ public:
 };
 
 
+3. 3196. Maximize Total Cost of Alternating Subarrays
+
+#define ll long long
+class Solution {
+public:
+    vector<vector<ll>>dp;
+    ll rec(int ind, int flag, vector<int>&nums)
+    {
+        if(ind>=nums.size())
+            return 0;
+        
+        if(dp[flag][ind]!=-1)
+            return dp[flag][ind];
+        
+        ll ans=-1e15;
+        
+        if(flag) // flag true means last taken was negative so, have to take positive this time
+        {
+            ans=max(ans, -1*nums[ind]*1LL + rec(ind+1,0,nums));
+        }
+        else // Last taken was positive so have to take negative this time
+        {
+            ans=max(ans, nums[ind]*1LL + rec(ind+1,1,nums));
+        }
+        
+        ans=max(ans, nums[ind]*1LL + rec(ind+1,0,nums)); // We can always take single element as subarray, So the next starting point is the next element and sign will be positive 
+        
+        return dp[flag][ind]=ans;
+    }
+    long long maximumTotalCost(vector<int>& nums)
+    {
+        int n = nums.size();
+        dp.assign(2,vector<ll>(n+1,-1));
+        return rec(0,0,nums);
+    }
+};
+
+
+4. 3197. Find the Minimum Area to Cover All Ones II
+
