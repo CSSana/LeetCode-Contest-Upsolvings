@@ -1,0 +1,80 @@
+1. 3206. Alternating Groups I
+
+class Solution {
+public:
+    int numberOfAlternatingGroups(vector<int>& colors) 
+    {
+        int cnt=0, n=colors.size();
+        
+        for(int i=0;i<n;i++)
+            colors.push_back(colors[i]);
+        
+        for(int i=1;i<=n;i++)
+        {
+            if(colors[i]!=colors[i-1] and colors[i]!=colors[i+1])
+                cnt++;
+        }
+        
+        return cnt;
+    }
+};
+
+
+2. 3207. Maximum Points After Enemy Battles
+
+#define ll long long
+class Solution {
+public:
+    long long maximumPoints(vector<int>& enemyEnergies, int currentEnergy) 
+    {
+        ll currEnergy=currentEnergy*1LL;
+        sort(enemyEnergies.begin(),enemyEnergies.end());
+        
+        if(enemyEnergies[0]>currEnergy)
+            return 0LL;
+        
+        /*
+        Mark all the others except the smallest one first.
+        Use the smallest one to increase the energy.
+        */
+        
+        int n=enemyEnergies.size();
+        for(int i=1;i<n;i++)
+            currEnergy+=enemyEnergies[i];
+        
+        return (currEnergy/enemyEnergies[0]*1LL);
+    }
+};
+
+
+3. 3208. Alternating Groups II
+
+class Solution {
+public:
+    int numberOfAlternatingGroups(vector<int>& colors, int k) 
+    {
+        int n=colors.size();
+        for(int i=0;i<min(k-1,n);i++) // We need k length alternating seq so just add the k no of elements 
+        {
+            colors.push_back(colors[i]);
+        }
+        
+        n=colors.size();
+        vector<int>dp(n,1);
+        int cnt=0;
+        
+        for(int i=1;i<n;i++)
+        {
+            if(colors[i-1]!=colors[i])
+                dp[i]=1+dp[i-1];
+            
+            if(i>=k-1 and dp[i]>=k)
+                cnt++;
+        }
+        
+        return cnt;
+    }
+};
+
+
+4. 3209. Number of Subarrays With AND Value of K
